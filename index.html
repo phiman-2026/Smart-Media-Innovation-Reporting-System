@@ -284,12 +284,32 @@
     pointer-events: none;
   }
   .toast {
-    background: var(--ink); color: #fff; padding: 13px 18px; border-radius: 10px;
-    font-size: 14.5px; box-shadow: var(--shadow); max-width: 340px;
+    background: var(--ink); color: #fff; padding: 13px 16px; border-radius: 10px;
+    font-size: 14.5px; box-shadow: var(--shadow); max-width: 340px; width: 100%;
     animation: toast-in .25s ease; transition: opacity .3s ease;
+    display: flex; align-items: flex-start; gap: 10px; position: relative;
+    overflow: hidden; pointer-events: auto; box-sizing: border-box;
   }
+  .toast.dismissing { opacity: 0; }
   .toast.success { background: var(--teal-800); }
   .toast.error { background: var(--brick-600); }
+  .toast.warning { background: #B8791E; }
+  .toast.info { background: var(--ink); }
+  .toast-icon { flex-shrink: 0; width: 19px; height: 19px; margin-top: 2px; }
+  .toast-icon svg { width: 100%; height: 100%; display: block; }
+  .toast-text { flex: 1; line-height: 1.5; min-width: 0; }
+  .toast-close {
+    flex-shrink: 0; width: 22px; height: 22px; margin: -2px -2px 0 0; border: none; border-radius: 6px;
+    background: rgba(255,255,255,.16); color: #fff; display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0; transition: background .15s ease;
+  }
+  .toast-close:hover { background: rgba(255,255,255,.32); }
+  .toast-close svg { width: 11px; height: 11px; display: block; }
+  .toast-bar {
+    position: absolute; left: 0; bottom: 0; height: 3px; width: 100%; background: rgba(255,255,255,.4);
+    transform-origin: left; animation-name: toast-shrink; animation-timing-function: linear; animation-fill-mode: forwards;
+  }
+  @keyframes toast-shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
   @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
   .site-footer { text-align: center; padding: 26px 20px 40px; color: var(--ink-soft); font-size: 13px; }
@@ -464,9 +484,9 @@
 </div>
 
 <div class="modal-overlay" id="confirmOverlay" hidden>
-  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmMessage">
     <h3 id="confirmTitle">ยืนยันการลบรายงาน</h3>
-    <p>ต้องการลบรายงานนี้ใช่หรือไม่ ไฟล์แนบและข้อมูลจะถูกลบออกจากระบบและไม่สามารถย้อนกลับได้</p>
+    <p id="confirmMessage">ต้องการลบรายงานนี้ใช่หรือไม่ ไฟล์แนบและข้อมูลจะถูกลบออกจากระบบและไม่สามารถย้อนกลับได้</p>
     <div class="modal-actions">
       <button type="button" class="btn btn-ghost" id="confirmCancelBtn">ยกเลิก</button>
       <button type="button" class="btn btn-danger" id="confirmDeleteBtn">ลบรายงาน</button>
@@ -499,7 +519,8 @@
   let currentUser = null; // { email, name, picture, role, token }
   let allReports = [];
   let editingReportId = null;
-  let pendingDeleteId = null;
+  let pendingConfirmAction = null; // function to run if the user confirms the open dialog
+  let confirmOverlayLastFocused = null; // element to restore focus to when the dialog closes
 
   // ==========================================
   // 🌐 API HELPERS
@@ -924,11 +945,47 @@
   }
 
   // ==========================================
-  // 🗑️ DELETE CONFIRMATION
+  // 🗑️ CONFIRM OVERLAY (generic — used for report delete + admin removal)
+  // Focus management: auto-focuses the safe "ยกเลิก" button on open, traps
+  // Tab/Shift+Tab inside the dialog, closes on Esc or backdrop click, and
+  // restores focus to whatever triggered it once closed.
   // ==========================================
-  function askDeleteConfirmation(reportId) {
-    pendingDeleteId = reportId;
+  function openConfirmOverlay(opts) {
+    document.getElementById('confirmTitle').textContent = opts.title;
+    document.getElementById('confirmMessage').textContent = opts.message;
+    document.getElementById('confirmDeleteBtn').textContent = opts.confirmLabel;
+    pendingConfirmAction = opts.onConfirm;
+    confirmOverlayLastFocused = document.activeElement;
     document.getElementById('confirmOverlay').hidden = false;
+    document.getElementById('confirmCancelBtn').focus();
+  }
+
+  function closeConfirmOverlay() {
+    document.getElementById('confirmOverlay').hidden = true;
+    pendingConfirmAction = null;
+    if (confirmOverlayLastFocused && document.contains(confirmOverlayLastFocused) && typeof confirmOverlayLastFocused.focus === 'function') {
+      confirmOverlayLastFocused.focus();
+    }
+    confirmOverlayLastFocused = null;
+  }
+
+  function askDeleteConfirmation(reportId) {
+    openConfirmOverlay({
+      title: 'ยืนยันการลบรายงาน',
+      message: 'ต้องการลบรายงานนี้ใช่หรือไม่ ไฟล์แนบและข้อมูลจะถูกลบออกจากระบบและไม่สามารถย้อนกลับได้',
+      confirmLabel: 'ลบรายงาน',
+      onConfirm: () => deleteReportConfirmed(reportId)
+    });
+  }
+
+  async function deleteReportConfirmed(id) {
+    try {
+      await apiPost({ action: 'delete', token: currentUser.token, id: id });
+      showToast('ลบรายงาน ' + id + ' เรียบร้อยแล้ว', 'success');
+      await loadReports();
+    } catch (err) {
+      showToast(err.message || 'ลบรายงานไม่สำเร็จ', 'error');
+    }
   }
 
   // ==========================================
@@ -975,19 +1032,27 @@
       delBtn.type = 'button'; delBtn.className = 'icon-btn icon-btn-danger'; delBtn.textContent = 'ลบ';
       delBtn.disabled = isSelf;
       delBtn.title = isSelf ? 'ลบบัญชีของตัวเองไม่ได้' : 'ลบสิทธิ์แอดมินใหญ่ของคนนี้';
-      delBtn.addEventListener('click', async () => {
-        if (!confirm('ต้องการลบสิทธิ์แอดมินใหญ่ของ ' + a.email + ' ใช่หรือไม่?')) return;
-        try {
-          await apiPost({ action: 'deleteAdmin', token: currentUser.token, email: a.email });
-          showToast('ลบแอดมิน ' + a.email + ' เรียบร้อยแล้ว', 'success');
-          loadAdmins();
-        } catch (err) {
-          showToast(err.message || 'ลบแอดมินไม่สำเร็จ', 'error');
-        }
+      delBtn.addEventListener('click', () => {
+        openConfirmOverlay({
+          title: 'ยืนยันการลบแอดมินใหญ่',
+          message: 'ต้องการลบสิทธิ์แอดมินใหญ่ของ ' + a.email + ' ใช่หรือไม่',
+          confirmLabel: 'ลบแอดมิน',
+          onConfirm: () => deleteAdminConfirmed(a.email)
+        });
       });
       li.appendChild(delBtn);
       listEl.appendChild(li);
     });
+  }
+
+  async function deleteAdminConfirmed(email) {
+    try {
+      await apiPost({ action: 'deleteAdmin', token: currentUser.token, email: email });
+      showToast('ลบแอดมิน ' + email + ' เรียบร้อยแล้ว', 'success');
+      loadAdmins();
+    } catch (err) {
+      showToast(err.message || 'ลบแอดมินไม่สำเร็จ', 'error');
+    }
   }
 
   // ==========================================
@@ -1001,17 +1066,67 @@
 
   // ==========================================
   // 🔔 TOAST
+  // Every type pairs a distinct SVG icon with its color so meaning never
+  // depends on color alone. Each toast gets a manual ✕ close button plus
+  // an auto-dismiss timer (shown as a shrinking bar) that pauses while the
+  // toast has mouse or keyboard focus.
   // ==========================================
+  const TOAST_ICONS = {
+    success: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="currentColor" stroke-width="1.8"/><path d="m8 12.4 2.6 2.6L16 9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    error: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="currentColor" stroke-width="1.8"/><path d="m9.3 9.3 5.4 5.4m0-5.4-5.4 5.4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    warning: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M12 9.3v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="16.6" r="0.95" fill="currentColor"/></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10Z" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v5.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="7.8" r="1" fill="currentColor"/></svg>'
+  };
+  const TOAST_CLOSE_ICON = '<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>';
+  const TOAST_LIMIT = 4;
+
   function showToast(message, type) {
+    if (!TOAST_ICONS[type]) type = 'info';
     const region = document.getElementById('toastRegion');
+
+    // Keep the stack tidy — retire the oldest visible toast once the limit
+    // is exceeded (checked against non-dismissing toasts so a burst of
+    // calls in quick succession still caps correctly).
+    const visible = region.querySelectorAll('.toast:not(.dismissing)');
+    if (visible.length >= TOAST_LIMIT) dismissToastEl(visible[0]);
+
     const toast = document.createElement('div');
-    toast.className = 'toast ' + (type || '');
-    toast.textContent = message;
+    toast.className = 'toast ' + type;
+    toast.setAttribute('role', (type === 'error' || type === 'warning') ? 'alert' : 'status');
+    toast.innerHTML =
+      '<span class="toast-icon" aria-hidden="true">' + TOAST_ICONS[type] + '</span>' +
+      '<span class="toast-text"></span>' +
+      '<button type="button" class="toast-close" aria-label="ปิดการแจ้งเตือน">' + TOAST_CLOSE_ICON + '</button>' +
+      '<span class="toast-bar"></span>';
+    toast.querySelector('.toast-text').textContent = message; // textContent, never innerHTML — matches original XSS-safe handling
     region.appendChild(toast);
-    setTimeout(() => {
-      toast.style.opacity = '0';
-      setTimeout(() => toast.remove(), 300);
-    }, 4200);
+
+    const duration = type === 'error' ? 6000 : 4200;
+    const bar = toast.querySelector('.toast-bar');
+    bar.style.animationDuration = duration + 'ms';
+    let remaining = duration, startedAt = Date.now(), timerId = setTimeout(() => dismissToastEl(toast), duration);
+
+    function pause() {
+      clearTimeout(timerId);
+      remaining -= (Date.now() - startedAt);
+      bar.style.animationPlayState = 'paused';
+    }
+    function resume() {
+      startedAt = Date.now();
+      timerId = setTimeout(() => dismissToastEl(toast), Math.max(remaining, 300));
+      bar.style.animationPlayState = 'running';
+    }
+    toast.addEventListener('mouseenter', pause);
+    toast.addEventListener('mouseleave', resume);
+    toast.addEventListener('focusin', pause);
+    toast.addEventListener('focusout', resume);
+    toast.querySelector('.toast-close').addEventListener('click', () => { clearTimeout(timerId); dismissToastEl(toast); });
+  }
+
+  function dismissToastEl(toast) {
+    if (!toast || toast.classList.contains('dismissing')) return;
+    toast.classList.add('dismissing');
+    setTimeout(() => toast.remove(), 300);
   }
 
   // ==========================================
@@ -1112,23 +1227,28 @@
   document.getElementById('searchInput').addEventListener('input', renderReports);
   document.getElementById('filterSubject').addEventListener('change', renderReports);
 
-  document.getElementById('confirmCancelBtn').addEventListener('click', () => {
-    pendingDeleteId = null;
-    document.getElementById('confirmOverlay').hidden = true;
-  });
+  document.getElementById('confirmCancelBtn').addEventListener('click', closeConfirmOverlay);
   document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
-    if (!pendingDeleteId) return;
-    const id = pendingDeleteId;
-    document.getElementById('confirmOverlay').hidden = true;
-    try {
-      await apiPost({ action: 'delete', token: currentUser.token, id: id });
-      showToast('ลบรายงาน ' + id + ' เรียบร้อยแล้ว', 'success');
-      await loadReports();
-    } catch (err) {
-      showToast(err.message || 'ลบรายงานไม่สำเร็จ', 'error');
-    } finally {
-      pendingDeleteId = null;
-    }
+    const action = pendingConfirmAction;
+    closeConfirmOverlay();
+    if (action) await action();
+  });
+
+  // Click on the dimmed backdrop (not the dialog itself) closes it.
+  document.getElementById('confirmOverlay').addEventListener('click', (e) => {
+    if (e.target.id === 'confirmOverlay') closeConfirmOverlay();
+  });
+
+  // Esc closes it; Tab/Shift+Tab is trapped between the two dialog buttons
+  // so keyboard focus never escapes to the page behind it while it's open.
+  document.getElementById('confirmOverlay').addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); closeConfirmOverlay(); return; }
+    if (e.key !== 'Tab') return;
+    const focusables = Array.from(document.querySelectorAll('#confirmOverlay button:not([disabled])'));
+    if (!focusables.length) return;
+    const first = focusables[0], last = focusables[focusables.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 
   document.getElementById('addAdminForm').addEventListener('submit', async function (e) {
