@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#0b4a4f">
+<meta name="theme-color" content="#443199">
 <title>Smart Media & Innovation Reporting System ระบบรายงานสื่อและนวัตกรรม | โรงเรียนพิมานพิทยาสรรค์</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,25 +11,29 @@
 <script src="https://accounts.google.com/gsi/client" async defer onload="initGoogleSignIn()"></script>
 <style>
   :root {
-    --ink: #142e2c;
-    --ink-soft: #4c6864;
-    --teal-900: #0b4a4f;
-    --teal-800: #0e5960; 
-    --teal-700: #106169;
-    --teal-600: #16767d;
-    --teal-500: #1c8b93;
-    --teal-100: #e4f0ef;
-    --gold-500: #c68a3d;
-    --gold-600: #ad7530;
-    --gold-100: #f8ecd9;
-    --paper: #f1f6f5;
+    /* ==========================================================
+       Sunset Spectrum — ม่วงคราม -> ม่วงหลวง -> บานเย็น -> แดงส้ม
+       (เดิมเป็นโทนเขียวเข้ม-ทอง เปลี่ยนเฉพาะโทนสี โครงสร้างเดิมทั้งหมด)
+    ========================================================== */
+    --ink: #241a3d;
+    --ink-soft: #6f6489;
+    --teal-900: #443199;   /* เดิม teal-900 → ม่วงครามเข้ม (ใช้กับ header/แถบเข้ม) */
+    --teal-800: #522e93;   /* ไล่เฉดระหว่าง violet และ purple สำหรับ gradient header */
+    --teal-700: #792CA2;   /* เดิม teal-700 → ม่วงหลวง (ลิงก์/ปุ่มรอง) */
+    --teal-600: #8A3AAE;   /* เดิม teal-600 → ปุ่มหลัก (สว่างกว่า teal-700 เล็กน้อยเพื่อคอนทราสต์) */
+    --teal-500: #9B4FBB;   /* เดิม teal-500 → ใช้กับ focus ring */
+    --teal-100: #F1E7F8;   /* เดิม teal-100 → พื้นหลัง badge อ่อน */
+    --gold-500: #C13383;   /* เดิม gold-500 → บานเย็น ใช้เป็นสีเน้น/badge บทบาท/focus outline */
+    --gold-600: #A32A6E;   /* เดิม gold-600 → บานเย็นเข้ม (hover) */
+    --gold-100: #FBE7F1;   /* เดิม gold-100 → พื้นหลังอ่อนของสีเน้น */
+    --paper: #FAF7FC;      /* เดิม paper → พื้นหลังม่วงอ่อนมาก */
     --card: #ffffff;
-    --sage-200: #dbe8e4;
-    --sage-100: #eaf2f0;
-    --line: #cfdedb;
-    --brick-600: #b0442f;
-    --brick-100: #fbe9e6;
-    --shadow: 0 1px 2px rgba(11,74,79,.06), 0 10px 26px -14px rgba(11,74,79,.28);
+    --sage-200: #ECE1F5;   /* เดิม sage-200 → เส้นขอบ/พื้นรองอ่อน */
+    --sage-100: #F5EFFA;   /* เดิม sage-100 → พื้นชิป/ดรอปโซนอ่อน */
+    --line: #E3D6F0;
+    --brick-600: #E05454;  /* เดิม brick-600 → แดงส้ม ใช้กับสถานะอันตราย/ลบ */
+    --brick-100: #FCEAEA;  /* เดิม brick-100 → พื้นอ่อนของสถานะอันตราย */
+    --shadow: 0 1px 2px rgba(68,49,153,.07), 0 10px 26px -14px rgba(68,49,153,.30);
     --radius-sm: 8px;
     --radius-md: 14px;
     --radius-lg: 20px;
@@ -148,10 +152,10 @@
   }
   .field textarea { resize: vertical; min-height: 90px; }
   .field input:focus, .field select:focus, .field textarea:focus {
-    outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3px rgba(28,139,147,.15);
+    outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3px rgba(121,44,162,.16);
   }
   .other-input { margin-top: 9px; }
-  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23106169' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23792CA2' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
   .chip-group { display: flex; flex-wrap: wrap; gap: 9px; }
   .chip { position: relative; display: inline-flex; }
@@ -182,14 +186,14 @@
     padding: 12px 26px; border-radius: 999px; border: none; cursor: pointer;
     transition: transform .08s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
   }
-  .btn-primary { background: var(--teal-600); color: #fff; box-shadow: 0 6px 16px -6px rgba(22,118,125,.55); }
+  .btn-primary { background: var(--teal-600); color: #fff; box-shadow: 0 6px 16px -6px rgba(121,44,162,.5); }
   .btn-primary:hover { background: var(--teal-700); }
   .btn-primary:active { transform: scale(.98); }
   .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; }
   .btn-ghost { background: transparent; color: var(--teal-700); border: 1.5px solid var(--line); }
   .btn-ghost:hover { background: var(--sage-100); }
   .btn-danger { background: var(--brick-600); color: #fff; }
-  .btn-danger:hover { background: #96392a; }
+  .btn-danger:hover { background: #C23F3F; }
 
   /* ---------- List panel ---------- */
   .list-controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
@@ -216,7 +220,7 @@
     position: absolute; top: -14px; left: 20px;
     background: var(--teal-900); color: #fff;
     font-family: var(--font-display); font-weight: 600; letter-spacing: .04em; font-size: 12.5px;
-    padding: 5px 13px; border-radius: 6px 6px 3px 3px; box-shadow: 0 3px 6px rgba(11,74,79,.3);
+    padding: 5px 13px; border-radius: 6px 6px 3px 3px; box-shadow: 0 3px 6px rgba(68,49,153,.3);
   }
   .report-card-title { font-size: 17px; font-weight: 600; line-height: 1.4; }
   .report-card-meta { font-size: 13.5px; color: var(--ink-soft); }
@@ -263,12 +267,12 @@
 
   /* ---------- Modal / toast ---------- */
   .modal-overlay {
-    position: fixed; inset: 0; background: rgba(11,30,29,.55);
+    position: fixed; inset: 0; background: rgba(36,26,61,.55);
     display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 150;
   }
   .modal {
     background: #fff; border-radius: var(--radius-lg); max-width: 420px; width: 100%; padding: 26px;
-    box-shadow: 0 20px 60px -20px rgba(11,74,79,.5);
+    box-shadow: 0 20px 60px -20px rgba(68,49,153,.5);
   }
   .modal h3 { font-size: 18px; margin-bottom: 10px; }
   .modal p { color: var(--ink-soft); font-size: 14.5px; line-height: 1.6; }
