@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#0b4a4f">
+<title>Smart Media & Innovation Reporting System ระบบรายงานสื่อและนวัตกรรม | โรงเรียนพิมานพิทยาสรรค์</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@400;500;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://accounts.google.com/gsi/client" async defer onload="initGoogleSignIn()"></script>
+<style>
+  :root {
+    --ink: #142e2c;
+    --ink-soft: #4c6864;
+    --teal-900: #0b4a4f;
+    --teal-800: #0e5960; 
+    --teal-700: #106169;
+    --teal-600: #16767d;
+    --teal-500: #1c8b93;
+    --teal-100: #e4f0ef;
+    --gold-500: #c68a3d;
+    --gold-600: #ad7530;
+    --gold-100: #f8ecd9;
+    --paper: #f1f6f5;
+    --card: #ffffff;
+    --sage-200: #dbe8e4;
+    --sage-100: #eaf2f0;
+    --line: #cfdedb;
+    --brick-600: #b0442f;
+    --brick-100: #fbe9e6;
+    --shadow: 0 1px 2px rgba(11,74,79,.06), 0 10px 26px -14px rgba(11,74,79,.28);
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --font-display: 'Kanit', sans-serif;
+    --font-body: 'Sarabun', sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  h1, h2, h3 { font-family: var(--font-display); margin: 0; color: var(--teal-900); }
+  p { margin: 0; }
+  button { font-family: inherit; }
+  a { color: var(--teal-700); }
+  ul { margin: 0; padding: 0; list-style: none; }
+
+  :focus-visible { outline: 2.5px solid var(--gold-500); outline-offset: 2px; }
+
+  /* ---------- Header ---------- */
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 22px clamp(16px, 4vw, 40px);
+    background: linear-gradient(155deg, var(--teal-900), var(--teal-800) 70%);
+    color: #fff;
+  }
+  .brand { display: flex; align-items: center; gap: 16px; }
+  .emblem {
+    width: 54px; height: 54px; flex-shrink: 0;
+    border-radius: 50%;
+    background: var(--teal-700);
+    border: 2px solid var(--gold-500);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--font-display); font-weight: 700; font-size: 23px;
+    color: var(--gold-100);
+  }
+  .eyebrow {
+    font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase;
+    opacity: .8; margin: 0 0 3px;
+  }
+  .brand-text h1 {
+    color: #fff;
+    font-size: clamp(18px, 2.4vw, 23px);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .auth-area { display: flex; align-items: center; gap: 12px; }
+  .user-chip {
+    display: flex; align-items: center; gap: 10px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    padding: 6px 8px 6px 6px; border-radius: 999px;
+  }
+  .user-chip img { width: 32px; height: 32px; border-radius: 50%; display: block; background: #fff; }
+  .user-chip-text { display: flex; flex-direction: column; line-height: 1.25; }
+  .user-name { font-size: 14px; font-weight: 600; color: #fff; }
+  .role-badge {
+    font-size: 11px; font-weight: 600; color: var(--teal-900);
+    background: var(--gold-500); border-radius: 999px; padding: 1px 8px; width: fit-content;
+    margin-top: 2px;
+  }
+  .btn-signout {
+    background: transparent; border: 1px solid rgba(255,255,255,.35); color: #fff;
+    font-size: 13px; padding: 7px 14px; border-radius: 999px; cursor: pointer;
+    transition: background .15s ease;
+  }
+  .btn-signout:hover { background: rgba(255,255,255,.12); }
+
+  /* ---------- Tabs ---------- */
+  .tab-nav {
+    display: flex; gap: 4px; overflow-x: auto;
+    padding: 0 clamp(16px, 4vw, 40px);
+    background: var(--card); border-bottom: 1px solid var(--line);
+  }
+  .tab-btn {
+    font-family: var(--font-display); font-size: 15px; font-weight: 500;
+    padding: 16px 18px; background: none; border: none; cursor: pointer;
+    color: var(--ink-soft); border-bottom: 3px solid transparent; white-space: nowrap;
+    transition: color .15s ease;
+  }
+  .tab-btn:hover { color: var(--teal-700); }
+  .tab-btn.active { color: var(--teal-700); border-bottom-color: var(--gold-500); }
+
+  /* ---------- Layout ---------- */
+  .content { max-width: 880px; margin: 0 auto; padding: 34px clamp(16px, 4vw, 40px) 90px; }
+  .panel-head { margin-bottom: 22px; }
+  .panel-head h2 { font-size: 21px; font-weight: 600; }
+  .panel-head p { color: var(--ink-soft); margin-top: 6px; font-size: 14.5px; }
+  .card-surface {
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-lg);
+    padding: clamp(20px, 4vw, 34px); box-shadow: var(--shadow);
+  }
+
+  /* ---------- Form ---------- */
+  .field { margin-bottom: 21px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field label, .field > .label-text {
+    display: block; font-weight: 600; margin-bottom: 7px; font-size: 15px; color: var(--teal-900);
+  }
+  .field .hint { font-weight: 400; color: var(--ink-soft); font-size: 13px; display: block; margin-top: 4px; }
+  .req { color: var(--brick-600); margin-left: 2px; }
+  .field input[type=text], .field input[type=email], .field select, .field textarea {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 15.5px; background: #fff; color: var(--ink);
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .field textarea { resize: vertical; min-height: 90px; }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: var(--teal-500); box-shadow: 0 0 0 3px rgba(28,139,147,.15);
+  }
+  .other-input { margin-top: 9px; }
+  select { appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%23106169' stroke-width='2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
+
+  .chip-group { display: flex; flex-wrap: wrap; gap: 9px; }
+  .chip { position: relative; display: inline-flex; }
+  .chip input { position: absolute; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+  .chip span {
+    display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: var(--sage-100); color: var(--ink-soft);
+    font-size: 14.5px; transition: background .15s ease, color .15s ease, border-color .15s ease;
+  }
+  .chip input:checked + span { background: var(--teal-600); border-color: var(--teal-600); color: #fff; }
+  .chip input:focus-visible + span { outline: 2.5px solid var(--gold-500); outline-offset: 2px; }
+
+  .file-drop {
+    position: relative; border: 2px dashed var(--line); border-radius: var(--radius-md);
+    padding: 26px 16px; text-align: center; cursor: pointer; background: var(--sage-100);
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .file-drop.dragover { border-color: var(--teal-500); background: var(--teal-100); }
+  .file-drop input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+  .file-drop p { font-size: 14.5px; color: var(--ink-soft); }
+  .upload-progress { height: 8px; background: var(--sage-200); border-radius: 999px; margin-top: 12px; overflow: hidden; }
+  .upload-progress-bar { height: 100%; width: 0%; background: var(--gold-500); transition: width .2s ease; }
+
+  .form-actions { display: flex; gap: 12px; margin-top: 26px; flex-wrap: wrap; }
+
+  .btn {
+    font-family: var(--font-display); font-weight: 500; font-size: 15px;
+    padding: 12px 26px; border-radius: 999px; border: none; cursor: pointer;
+    transition: transform .08s ease, box-shadow .15s ease, background .15s ease, color .15s ease;
+  }
+  .btn-primary { background: var(--teal-600); color: #fff; box-shadow: 0 6px 16px -6px rgba(22,118,125,.55); }
+  .btn-primary:hover { background: var(--teal-700); }
+  .btn-primary:active { transform: scale(.98); }
+  .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+  .btn-ghost { background: transparent; color: var(--teal-700); border: 1.5px solid var(--line); }
+  .btn-ghost:hover { background: var(--sage-100); }
+  .btn-danger { background: var(--brick-600); color: #fff; }
+  .btn-danger:hover { background: #96392a; }
+
+  /* ---------- List panel ---------- */
+  .list-controls { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+  .list-controls input[type=search] {
+    flex: 2; min-width: 220px; padding: 11px 14px; border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 15px;
+  }
+  .list-controls select {
+    flex: 1; min-width: 180px; padding: 11px 14px; border: 1.5px solid var(--line);
+    border-radius: var(--radius-sm); font-family: var(--font-body); font-size: 15px; background-color: #fff;
+  }
+  .result-count { font-size: 13.5px; color: var(--ink-soft); margin: 14px 2px 0; }
+  .loading-state, .empty-state {
+    text-align: center; color: var(--ink-soft); padding: 50px 20px; font-size: 15px;
+  }
+
+  .report-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(272px, 1fr)); gap: 26px 18px; margin-top: 14px; }
+  .report-card {
+    position: relative; background: var(--card); border: 1px solid var(--line);
+    border-radius: var(--radius-md); padding: 30px 20px 20px; margin-top: 14px;
+    box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 10px;
+  }
+  .report-card-tab {
+    position: absolute; top: -14px; left: 20px;
+    background: var(--teal-900); color: #fff;
+    font-family: var(--font-display); font-weight: 600; letter-spacing: .04em; font-size: 12.5px;
+    padding: 5px 13px; border-radius: 6px 6px 3px 3px; box-shadow: 0 3px 6px rgba(11,74,79,.3);
+  }
+  .report-card-title { font-size: 17px; font-weight: 600; line-height: 1.4; }
+  .report-card-meta { font-size: 13.5px; color: var(--ink-soft); }
+  .report-card-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    display: inline-block; padding: 4px 11px; border-radius: 999px;
+    background: var(--teal-100); color: var(--teal-700); font-size: 12.5px; font-weight: 600;
+  }
+  .report-card-course { font-size: 13.5px; color: var(--ink-soft); }
+  .report-card-details { font-size: 14px; color: var(--ink); line-height: 1.55; }
+  .report-card-date { font-size: 12px; color: var(--ink-soft); opacity: .8; }
+  .report-card-footer {
+    margin-top: auto; padding-top: 14px; border-top: 1px solid var(--sage-200);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+  }
+  .link-file { font-size: 14px; font-weight: 600; text-decoration: none; }
+  .link-file:hover { text-decoration: underline; }
+  .link-file-empty { color: var(--ink-soft); font-weight: 400; }
+  .report-card-actions { display: flex; gap: 8px; }
+  .icon-btn {
+    font-size: 13px; font-weight: 600; padding: 6px 13px; border-radius: 999px;
+    border: 1.5px solid var(--line); background: #fff; color: var(--teal-700); cursor: pointer;
+  }
+  .icon-btn:hover { background: var(--sage-100); }
+  .icon-btn-danger { color: var(--brick-600); border-color: var(--brick-100); }
+  .icon-btn-danger:hover { background: var(--brick-100); }
+
+  /* ---------- Admin panel ---------- */
+  .inline-form { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .inline-form input {
+    padding: 11px 14px; border: 1.5px solid var(--line); border-radius: var(--radius-sm);
+    font-family: var(--font-body); font-size: 15px;
+  }
+  .inline-form input#newAdminEmail { flex: 2; min-width: 200px; }
+  .inline-form input#newAdminName { flex: 1; min-width: 160px; }
+  .admin-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 4px; border-bottom: 1px solid var(--sage-200);
+  }
+  .admin-row:last-child { border-bottom: none; }
+  .admin-name { font-weight: 600; font-size: 15px; }
+  .admin-email { font-size: 13.5px; color: var(--ink-soft); margin-top: 2px; }
+  .admin-list-empty, .admin-list-loading { color: var(--ink-soft); padding: 16px 4px; font-size: 14.5px; }
+
+  /* ---------- Modal / toast ---------- */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(11,30,29,.55);
+    display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 150;
+  }
+  .modal {
+    background: #fff; border-radius: var(--radius-lg); max-width: 420px; width: 100%; padding: 26px;
+    box-shadow: 0 20px 60px -20px rgba(11,74,79,.5);
+  }
+  .modal h3 { font-size: 18px; margin-bottom: 10px; }
+  .modal p { color: var(--ink-soft); font-size: 14.5px; line-height: 1.6; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
+
+  .toast-region {
+    position: fixed; bottom: 18px; right: 18px; left: 18px;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 10px; z-index: 200;
+    pointer-events: none;
+  }
+  .toast {
+    background: var(--ink); color: #fff; padding: 13px 18px; border-radius: 10px;
+    font-size: 14.5px; box-shadow: var(--shadow); max-width: 340px;
+    animation: toast-in .25s ease; transition: opacity .3s ease;
+  }
+  .toast.success { background: var(--teal-800); }
+  .toast.error { background: var(--brick-600); }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .site-footer { text-align: center; padding: 26px 20px 40px; color: var(--ink-soft); font-size: 13px; }
+
+  [hidden] { display: none !important; }
+
+  @media (max-width: 640px) {
+    .field-row { grid-template-columns: 1fr; }
+    .site-header { padding: 18px 16px; }
+    .content { padding-top: 26px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: .001ms !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <header class="site-header">
+    <div class="brand">
+      <div class="emblem" aria-hidden="true">พ</div>
+      <div class="brand-text">
+        <p class="eyebrow">โรงเรียนพิมานพิทยาสรรค์ · จังหวัดสตูล</p>
+        <h1>ระบบรายงานผลการผลิตและการใช้สื่อ นวัตกรรม<br>เพื่อการจัดการเรียนรู้</h1>
+      </div>
+    </div>
+    <div class="auth-area" id="authArea">
+      <div id="googleSignInButton"></div>
+      <div class="user-chip" id="userChip" hidden>
+        <img id="userAvatar" alt="">
+        <div class="user-chip-text">
+          <span class="user-name" id="userName"></span>
+          <span class="role-badge" id="userRoleBadge" hidden>แอดมินใหญ่</span>
+        </div>
+        <button type="button" class="btn-signout" id="signOutBtn">ออกจากระบบ</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tab-nav" aria-label="เมนูหลัก">
+    <button type="button" class="tab-btn active" data-tab="form">ส่งรายงานใหม่</button>
+    <button type="button" class="tab-btn" data-tab="list">รายการรายงานทั้งหมด</button>
+    <button type="button" class="tab-btn" data-tab="admin" id="adminTabBtn" hidden>จัดการแอดมิน</button>
+  </nav>
+
+  <main class="content">
+
+    <!-- ===== แท็บ: ส่งรายงานใหม่ ===== -->
+    <section class="panel" id="panel-form" data-panel="form">
+      <div class="panel-head">
+        <h2>แบบรายงานผลการผลิตและการใช้สื่อ นวัตกรรมเพื่อการจัดการเรียนรู้</h2>
+        <p>กรอกข้อมูลให้ครบทุกช่องที่มีเครื่องหมาย * แล้วแนบไฟล์แบบสรุปกิจกรรมเป็น PDF ก่อนบันทึก ต้องเข้าสู่ระบบด้วยอีเมลโรงเรียน (@phiman.ac.th) ก่อนจึงจะบันทึกได้</p>
+      </div>
+
+      <div class="card-surface">
+        <form id="reportForm" novalidate>
+
+          <div class="field">
+            <label for="fullName">ชื่อ-สกุล ครูผู้สอน <span class="req">*</span></label>
+            <input type="text" id="fullName" placeholder="เช่น นายสมชาย ใจดี">
+          </div>
+
+          <div class="field">
+            <label for="position">ตำแหน่ง <span class="req">*</span></label>
+            <select id="position"></select>
+            <input type="text" id="positionOther" class="other-input" hidden placeholder="ระบุตำแหน่ง">
+          </div>
+
+          <div class="field">
+            <label for="subjectGroup">กลุ่มสาระการเรียนรู้ <span class="req">*</span></label>
+            <select id="subjectGroup"></select>
+          </div>
+
+          <div class="field">
+            <label for="productionMethod">การผลิตสื่อ นวัตกรรม <span class="req">*</span></label>
+            <select id="productionMethod"></select>
+            <input type="text" id="productionMethodOther" class="other-input" hidden placeholder="ระบุวิธีการผลิตสื่อ">
+          </div>
+
+          <div class="field">
+            <span class="label-text">ประเภทผลงานสื่อ นวัตกรรม <span class="hint" style="display:inline">(เลือกได้มากกว่า 1 รายการ)</span> <span class="req">*</span></span>
+            <div class="chip-group" id="mediaTypesGroup"></div>
+            <input type="text" id="mediaTypesOther" class="other-input" hidden placeholder="ระบุประเภทผลงาน">
+          </div>
+
+          <div class="field">
+            <label for="mediaTitle">ชื่อสื่อการสอนหรือนวัตกรรม ประกอบการเรียนการสอน <span class="req">*</span></label>
+            <input type="text" id="mediaTitle" placeholder="เช่น ชุดสื่อการสอนเรื่อง กระบวนการออกแบบเชิงวิศวกรรม">
+          </div>
+
+          <div class="field field-row">
+            <div>
+              <label for="courseCode">รหัสวิชา <span class="req">*</span></label>
+              <input type="text" id="courseCode" placeholder="เช่น ว23102">
+            </div>
+            <div>
+              <label for="courseName">รายวิชา <span class="req">*</span></label>
+              <input type="text" id="courseName" placeholder="เช่น การออกแบบและเทคโนโลยี">
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="gradeLevel">ระดับชั้นที่ใช้สื่อการสอน <span class="req">*</span></label>
+            <select id="gradeLevel"></select>
+          </div>
+
+          <div class="field">
+            <label for="details">รายละเอียด (อธิบายลักษณะสื่อการสอนพอสังเขป) <span class="req">*</span></label>
+            <textarea id="details" rows="4" placeholder="อธิบายโดยย่อว่าสื่อ/นวัตกรรมนี้มีลักษณะอย่างไร ใช้ในขั้นตอนใดของการสอน"></textarea>
+          </div>
+
+          <div class="field">
+            <span class="label-text">อัปโหลดแบบสรุปกิจกรรมการใช้สื่อนวัตกรรมในการจัดการเรียนการสอน <span class="hint" style="display:inline">(PDF สูงสุด 50MB)</span> <span class="req">*</span></span>
+            <div class="file-drop" id="fileDrop">
+              <input type="file" id="fileInput" accept="application/pdf">
+              <p id="fileDropText">ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์ PDF</p>
+            </div>
+            <div class="upload-progress" id="uploadProgress" hidden>
+              <div class="upload-progress-bar" id="uploadProgressBar"></div>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary" id="submitBtn">บันทึกรายงาน</button>
+            <button type="button" class="btn btn-ghost" id="cancelEditBtn" hidden>ยกเลิกการแก้ไข</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== แท็บ: รายการรายงานทั้งหมด ===== -->
+    <section class="panel" id="panel-list" data-panel="list" hidden>
+      <div class="panel-head">
+        <h2>รายการรายงานทั้งหมด</h2>
+        <p>ค้นหาและเรียกดูรายงานสื่อ นวัตกรรมที่บันทึกไว้ในระบบ ดูได้โดยไม่ต้องเข้าสู่ระบบ</p>
+      </div>
+
+      <div class="list-controls">
+        <input type="search" id="searchInput" placeholder="ค้นหาชื่อสื่อ, ชื่อครู, รหัส/รายวิชา...">
+        <select id="filterSubject"></select>
+      </div>
+      <p class="result-count" id="resultCount"></p>
+
+      <p class="loading-state" id="loadingState">กำลังโหลดรายการรายงาน...</p>
+      <p class="empty-state" id="emptyState" hidden>ยังไม่มีรายงานในระบบ — เริ่มส่งรายงานแรกได้ที่แท็บ “ส่งรายงานใหม่”</p>
+      <div class="report-grid" id="reportGrid"></div>
+    </section>
+
+    <!-- ===== แท็บ: จัดการแอดมิน (แอดมินใหญ่เท่านั้น) ===== -->
+    <section class="panel" id="panel-admin" data-panel="admin" hidden>
+      <div class="panel-head">
+        <h2>จัดการแอดมินใหญ่</h2>
+        <p>แอดมินใหญ่แก้ไข/ลบรายงานของทุกคนได้ และเพิ่ม-ลบแอดมินใหญ่คนอื่นได้ (ยกเว้นลบบัญชีตัวเอง)</p>
+      </div>
+      <div class="card-surface">
+        <form id="addAdminForm" class="inline-form">
+          <input type="email" id="newAdminEmail" placeholder="อีเมล @phiman.ac.th" required>
+          <input type="text" id="newAdminName" placeholder="ชื่อ-สกุล (ไม่บังคับ)">
+          <button type="submit" class="btn btn-primary">เพิ่มแอดมิน</button>
+        </form>
+        <ul class="admin-list" id="adminList"></ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p>ระบบรายงานผลการผลิตและการใช้สื่อ นวัตกรรมเพื่อการจัดการเรียนรู้ โรงเรียนพิมานพิทยาสรรค์ <br>สำนักงานเขตพื้นที่การศึกษามัธยมศึกษาสงขลา สตูล สำนักงานศึกษาธิการจังหวัดสตูล</p>
+  </footer>
+</div>
+
+<div class="modal-overlay" id="confirmOverlay" hidden>
+  <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <h3 id="confirmTitle">ยืนยันการลบรายงาน</h3>
+    <p>ต้องการลบรายงานนี้ใช่หรือไม่ ไฟล์แนบและข้อมูลจะถูกลบออกจากระบบและไม่สามารถย้อนกลับได้</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="confirmCancelBtn">ยกเลิก</button>
+      <button type="button" class="btn btn-danger" id="confirmDeleteBtn">ลบรายงาน</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-region" id="toastRegion" aria-live="polite"></div>
+
+<script>
+  // ==========================================
+  // ⚙️ CONFIG — แก้ 2 ค่านี้ให้เป็นของจริงก่อนใช้งาน
+  // ==========================================
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyCo_l781NjwuhydlkSKaV_tfQJmLKaGpCaFcv-jNwv0TCjPcUObmUB_Nc9P9F2xQFzIg/exec';
+  const GOOGLE_CLIENT_ID = '857339235853-gbd7aip7ktrl2ot025q6judnvvdmfoa9.apps.googleusercontent.com';
+
+  // ต้องตรงกับ whitelist ใน Code.gs ทุกตัวอักษร
+  const OTHER_VALUE = 'อื่น ๆ';
+  const POSITIONS = ['ครูผู้ช่วย', 'ครู', 'ครูชำนาญการ', 'ครูชำนาญการพิเศษ', 'ครูอัตราจ้าง', 'นักศึกษาฝึกประสบการณ์', OTHER_VALUE];
+  const SUBJECT_GROUPS = ['ภาษาไทย', 'คณิตศาสตร์', 'วิทยาศาสตร์และเทคโนโลยี', 'สังคมศึกษา ศาสนา และวัฒนธรรม', 'ภาษาต่างประเทศ', 'สุขศึกษาและพลศึกษา', 'ศิลปะ', 'การงานอาชีพ', 'กิจกรรมพัฒนาผู้เรียน'];
+  const PRODUCTION_METHODS = ['ผลิตเอง', 'จัดหาจากแหล่งข้อมูลต่างๆ', OTHER_VALUE];
+  const MEDIA_TYPES = ['CAI', 'E-Book', 'PowerPoint', 'ชุดการสอน', 'แบบฝึกทักษะ', 'เทคนิควิธีสอน', OTHER_VALUE];
+  const GRADE_LEVELS = ['มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4', 'มัธยมศึกษาปีที่ 5', 'มัธยมศึกษาปีที่ 6'];
+
+  const CHUNK_SIZE = 6 * 1024 * 1024; // 6MB — ต้องตรงกับฝั่ง backend (หารด้วย 3 ลงตัวพอดี)
+
+  // ==========================================
+  // 🗂️ STATE
+  // ==========================================
+  let currentUser = null; // { email, name, picture, role, token }
+  let allReports = [];
+  let editingReportId = null;
+  let pendingDeleteId = null;
+
+  // ==========================================
+  // 🌐 API HELPERS
+  // ==========================================
+  function ensureApiConfigured() {
+    if (!API_URL || API_URL.indexOf('script.google.com') === -1) {
+      throw new Error('ยังไม่ได้ตั้งค่า API_URL ในไฟล์นี้ — เปิดไฟล์ index.html แล้วใส่ลิงก์ Web App ที่ deploy แล้วในตัวแปร API_URL ด้านบนของโค้ด');
+    }
+  }
+
+  // หมายเหตุ: fetch() ที่นี่ตั้งใจไม่ใส่ header 'Content-Type: application/json' เพราะ Google
+  // Apps Script Web App จะตอบ CORS preflight (OPTIONS request) ไม่ได้ ถ้า browser ส่ง header
+  // แบบนั้นมาจะกลายเป็น preflight ที่ Apps Script ไม่รองรับ ทำให้ fetch ล้มเหลว จึงปล่อยให้ใช้
+  // Content-Type เริ่มต้น (text/plain) แทน — ฝั่ง backend อ่าน e.postData.contents แล้ว
+  // JSON.parse เองอยู่แล้ว จึงไม่มีปัญหา
+  async function apiPost(body) {
+    ensureApiConfigured();
+    const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(body) });
+    let json;
+    try { json = await res.json(); }
+    catch (e) { throw new Error('เชื่อมต่อกับเซิร์ฟเวอร์ไม่สำเร็จ หรือได้รับข้อมูลที่ไม่ถูกต้อง'); }
+    if (json.status === 'error') throw new Error(json.message || 'เกิดข้อผิดพลาด');
+    return json;
+  }
+
+  async function apiGet() {
+    ensureApiConfigured();
+    const url = API_URL + (currentUser && currentUser.token ? ('?token=' + encodeURIComponent(currentUser.token)) : '');
+    const res = await fetch(url);
+    return res.json();
+  }
+
+  // ==========================================
+  // 🔐 GOOGLE SIGN-IN
+  // ==========================================
+  function initGoogleSignIn() {
+    if (!window.google || !google.accounts) return;
+    google.accounts.id.initialize({ client_id: GOOGLE_CLIENT_ID, callback: handleCredentialResponse });
+    google.accounts.id.renderButton(
+      document.getElementById('googleSignInButton'),
+      { theme: 'outline', size: 'large', text: 'signin_with', shape: 'pill', locale: 'th' }
+    );
+  }
+
+  async function handleCredentialResponse(response) {
+    try {
+      const result = await apiPost({ action: 'googleLogin', idToken: response.credential });
+      currentUser = Object.assign({}, result.user, { token: result.token });
+      onSignedIn();
+      showToast('เข้าสู่ระบบสำเร็จ ยินดีต้อนรับคุณ' + currentUser.name, 'success');
+    } catch (err) {
+      showToast(err.message || 'เข้าสู่ระบบไม่สำเร็จ', 'error');
+    }
+  }
+
+  function signOut() {
+    currentUser = null;
+    if (window.google && google.accounts) google.accounts.id.disableAutoSelect();
+    onSignedOut();
+    loadReports();
+  }
+
+  function onSignedIn() {
+    document.getElementById('googleSignInButton').hidden = true;
+    document.getElementById('userChip').hidden = false;
+    document.getElementById('userAvatar').src = currentUser.picture || '';
+    document.getElementById('userName').textContent = currentUser.name;
+    document.getElementById('userRoleBadge').hidden = currentUser.role !== 'super';
+    document.getElementById('adminTabBtn').hidden = currentUser.role !== 'super';
+    loadReports();
+  }
+
+  function onSignedOut() {
+    document.getElementById('googleSignInButton').hidden = false;
+    document.getElementById('userChip').hidden = true;
+    document.getElementById('adminTabBtn').hidden = true;
+    const adminBtn = document.querySelector('.tab-btn[data-tab="admin"]');
+    if (adminBtn && adminBtn.classList.contains('active')) switchTab('form');
+    resetForm();
+  }
+
+  // ==========================================
+  // 🧩 POPULATE FORM CONTROLS
+  // ==========================================
+  function populateSelect(selectEl, options, placeholder) {
+    selectEl.innerHTML = '';
+    const ph = document.createElement('option');
+    ph.value = ''; ph.disabled = true; ph.selected = true; ph.textContent = placeholder;
+    selectEl.appendChild(ph);
+    options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt; o.textContent = opt;
+      selectEl.appendChild(o);
+    });
+  }
+
+  function populateFilterSelect(selectEl, options, allLabel) {
+    selectEl.innerHTML = '';
+    const allOpt = document.createElement('option');
+    allOpt.value = ''; allOpt.textContent = allLabel;
+    selectEl.appendChild(allOpt);
+    options.forEach(opt => {
+      const o = document.createElement('option');
+      o.value = opt; o.textContent = opt;
+      selectEl.appendChild(o);
+    });
+  }
+
+  function populateChipGroup(containerEl, options) {
+    containerEl.innerHTML = '';
+    options.forEach(opt => {
+      const label = document.createElement('label');
+      label.className = 'chip';
+      const input = document.createElement('input');
+      input.type = 'checkbox'; input.name = 'mediaTypes'; input.value = opt;
+      const span = document.createElement('span');
+      span.textContent = opt;
+      label.appendChild(input); label.appendChild(span);
+      containerEl.appendChild(label);
+    });
+  }
+
+  // ==========================================
+  // 📝 FORM LOGIC
+  // ==========================================
+  function toggleOtherInput(show, el) {
+    el.hidden = !show;
+    if (!show) el.value = '';
+  }
+
+  function collectFormPayload() {
+    const mediaTypes = Array.from(document.querySelectorAll('input[name="mediaTypes"]:checked')).map(el => el.value);
+    return {
+      fullName: document.getElementById('fullName').value.trim(),
+      position: document.getElementById('position').value,
+      positionOther: document.getElementById('positionOther').value.trim(),
+      subjectGroup: document.getElementById('subjectGroup').value,
+      productionMethod: document.getElementById('productionMethod').value,
+      productionMethodOther: document.getElementById('productionMethodOther').value.trim(),
+      mediaTypes: mediaTypes,
+      mediaTypesOther: document.getElementById('mediaTypesOther').value.trim(),
+      mediaTitle: document.getElementById('mediaTitle').value.trim(),
+      courseCode: document.getElementById('courseCode').value.trim(),
+      courseName: document.getElementById('courseName').value.trim(),
+      gradeLevel: document.getElementById('gradeLevel').value,
+      details: document.getElementById('details').value.trim()
+    };
+  }
+
+  function validateFormClientSide(v) {
+    if (!v.fullName) return 'กรุณากรอกชื่อ-สกุลครูผู้สอน';
+    if (!v.position || (v.position === OTHER_VALUE && !v.positionOther)) return 'กรุณาเลือก/ระบุตำแหน่งให้ครบถ้วน';
+    if (!v.subjectGroup) return 'กรุณาเลือกกลุ่มสาระการเรียนรู้';
+    if (!v.productionMethod || (v.productionMethod === OTHER_VALUE && !v.productionMethodOther)) return 'กรุณาเลือก/ระบุการผลิตสื่อนวัตกรรมให้ครบถ้วน';
+    if (!v.mediaTypes.length || (v.mediaTypes.indexOf(OTHER_VALUE) !== -1 && !v.mediaTypesOther)) return 'กรุณาเลือกประเภทผลงานสื่อนวัตกรรมอย่างน้อย 1 รายการ (ระบุ "อื่น ๆ" ด้วยถ้าเลือกไว้)';
+    if (!v.mediaTitle) return 'กรุณากรอกชื่อสื่อการสอนหรือนวัตกรรม';
+    if (!v.courseCode) return 'กรุณากรอกรหัสวิชา';
+    if (!v.courseName) return 'กรุณากรอกรายวิชา';
+    if (!v.gradeLevel) return 'กรุณาเลือกระดับชั้นที่ใช้สื่อการสอน';
+    if (!v.details) return 'กรุณากรอกรายละเอียดลักษณะสื่อการสอน';
+    return null;
+  }
+
+  function resetForm() {
+    document.getElementById('reportForm').reset();
+    document.querySelectorAll('input[name="mediaTypes"]').forEach(cb => { cb.checked = false; });
+    editingReportId = null;
+    document.getElementById('submitBtn').textContent = 'บันทึกรายงาน';
+    document.getElementById('cancelEditBtn').hidden = true;
+    document.getElementById('positionOther').hidden = true;
+    document.getElementById('productionMethodOther').hidden = true;
+    document.getElementById('mediaTypesOther').hidden = true;
+    document.getElementById('fileDropText').textContent = 'ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์ PDF';
+  }
+
+  function splitCombinedOther(combinedValue) {
+    const prefix = OTHER_VALUE + ' (';
+    if (typeof combinedValue === 'string' && combinedValue.indexOf(prefix) === 0 && combinedValue.charAt(combinedValue.length - 1) === ')') {
+      return combinedValue.slice(prefix.length, -1);
+    }
+    return null;
+  }
+
+  function setSelectAndOtherFromCombined(selectId, otherId, combinedValue, allowedList) {
+    const selectEl = document.getElementById(selectId);
+    const otherEl = document.getElementById(otherId);
+    const otherText = splitCombinedOther(combinedValue);
+    if (otherText !== null) {
+      selectEl.value = OTHER_VALUE; otherEl.value = otherText; otherEl.hidden = false;
+    } else if (allowedList.indexOf(combinedValue) !== -1) {
+      selectEl.value = combinedValue; otherEl.hidden = true; otherEl.value = '';
+    } else {
+      selectEl.value = OTHER_VALUE; otherEl.value = combinedValue || ''; otherEl.hidden = false;
+    }
+  }
+
+  function setCheckboxesAndOtherFromCombined(combinedValue) {
+    const parts = (combinedValue || '').split(',').map(s => s.trim()).filter(Boolean);
+    const checkboxes = Array.from(document.querySelectorAll('input[name="mediaTypes"]'));
+    checkboxes.forEach(cb => { cb.checked = false; });
+
+    let hasOther = false, otherText = '';
+    parts.forEach(part => {
+      const extracted = splitCombinedOther(part);
+      if (extracted !== null) { hasOther = true; otherText = extracted; return; }
+      const match = checkboxes.find(cb => cb.value === part);
+      if (match) match.checked = true;
+      else { hasOther = true; otherText = otherText || part; }
+    });
+
+    const otherCheckbox = checkboxes.find(cb => cb.value === OTHER_VALUE);
+    const otherInput = document.getElementById('mediaTypesOther');
+    if (hasOther) {
+      if (otherCheckbox) otherCheckbox.checked = true;
+      otherInput.value = otherText; otherInput.hidden = false;
+    } else {
+      otherInput.hidden = true; otherInput.value = '';
+    }
+  }
+
+  function openEditForm(report) {
+    editingReportId = report['รหัส'];
+    document.getElementById('fullName').value = report['ชื่อ-สกุล'] || '';
+    setSelectAndOtherFromCombined('position', 'positionOther', report['ตำแหน่ง'], POSITIONS);
+    document.getElementById('subjectGroup').value = report['กลุ่มสาระการเรียนรู้'] || '';
+    setSelectAndOtherFromCombined('productionMethod', 'productionMethodOther', report['การผลิตสื่อนวัตกรรม'], PRODUCTION_METHODS);
+    setCheckboxesAndOtherFromCombined(report['ประเภทผลงานสื่อนวัตกรรม']);
+    document.getElementById('mediaTitle').value = report['ชื่อสื่อการสอนหรือนวัตกรรม'] || '';
+    document.getElementById('courseCode').value = report['รหัสวิชา'] || '';
+    document.getElementById('courseName').value = report['รายวิชา'] || '';
+    document.getElementById('gradeLevel').value = report['ระดับชั้นที่ใช้'] || '';
+    document.getElementById('details').value = report['รายละเอียด'] || '';
+    document.getElementById('fileInput').value = '';
+    document.getElementById('fileDropText').textContent = report['ลิงก์ไฟล์']
+      ? 'มีไฟล์แนบอยู่แล้ว — แนบไฟล์ใหม่เฉพาะถ้าต้องการแทนที่ไฟล์เดิม'
+      : 'ลากไฟล์มาวาง หรือคลิกเพื่อเลือกไฟล์ PDF';
+    document.getElementById('submitBtn').textContent = 'บันทึกการแก้ไข';
+    document.getElementById('cancelEditBtn').hidden = false;
+    switchTab('form');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ==========================================
+  // 📦 CHUNKED UPLOAD
+  // ==========================================
+  function arrayBufferToBase64(buffer) {
+    let binary = '';
+    const bytes = new Uint8Array(buffer);
+    const step = 0x8000;
+    for (let i = 0; i < bytes.length; i += step) {
+      binary += String.fromCharCode.apply(null, bytes.subarray(i, i + step));
+    }
+    return btoa(binary);
+  }
+
+  function generateUploadId() {
+    return 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
+  }
+
+  async function uploadFileInChunks(file, uploadId) {
+    const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * CHUNK_SIZE;
+      const end = Math.min(start + CHUNK_SIZE, file.size);
+      const chunkBuffer = await file.slice(start, end).arrayBuffer();
+      const chunkBase64 = arrayBufferToBase64(chunkBuffer);
+      await apiPost({ action: 'uploadChunk', uploadId: uploadId, chunkIndex: i, totalChunks: totalChunks, chunkData: chunkBase64 });
+      updateUploadProgress(Math.round(((i + 1) / totalChunks) * 100));
+    }
+    return totalChunks;
+  }
+
+  function formatFileSize(bytes) {
+    if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  }
+
+  function updateFileDropText() {
+    const f = document.getElementById('fileInput').files[0];
+    if (f) document.getElementById('fileDropText').textContent = 'เลือกไฟล์แล้ว: ' + f.name + ' (' + formatFileSize(f.size) + ')';
+  }
+
+  // ==========================================
+  // 📋 REPORT LIST
+  // ==========================================
+  async function loadReports() {
+    const loadingEl = document.getElementById('loadingState');
+    try {
+      const data = await apiGet();
+      allReports = data.reports || [];
+    } catch (err) {
+      allReports = [];
+      showToast('โหลดรายการรายงานไม่สำเร็จ: ' + err.message, 'error');
+    } finally {
+      if (loadingEl) loadingEl.hidden = true;
+      renderReports();
+    }
+  }
+
+  function formatThaiDate(isoString) {
+    if (!isoString) return '';
+    try {
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return '';
+      return 'บันทึกเมื่อ ' + d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
+    } catch (e) { return ''; }
+  }
+
+  function renderReports() {
+    const grid = document.getElementById('reportGrid');
+    const empty = document.getElementById('emptyState');
+    const search = document.getElementById('searchInput').value.trim().toLowerCase();
+    const subjectFilter = document.getElementById('filterSubject').value;
+
+    let filtered = allReports.filter(r => {
+      if (subjectFilter && r['กลุ่มสาระการเรียนรู้'] !== subjectFilter) return false;
+      if (!search) return true;
+      const haystack = [r['ชื่อสื่อการสอนหรือนวัตกรรม'], r['ชื่อ-สกุล'], r['รายวิชา'], r['รหัสวิชา'], r['รายละเอียด']].join(' ').toLowerCase();
+      return haystack.indexOf(search) !== -1;
+    });
+
+    filtered = filtered.slice().sort((a, b) => (b['รหัส'] || '').localeCompare(a['รหัส'] || ''));
+
+    document.getElementById('resultCount').textContent = allReports.length
+      ? (filtered.length + ' รายการ จากทั้งหมด ' + allReports.length + ' รายการ')
+      : '';
+
+    grid.innerHTML = '';
+    if (filtered.length === 0) {
+      empty.hidden = allReports.length !== 0; // ถ้าไม่มีรายงานเลยให้ข้อความ empty-state เดิม, ถ้ามีแต่กรองแล้วไม่เจอค่อยเปลี่ยนข้อความ
+      empty.textContent = allReports.length === 0
+        ? 'ยังไม่มีรายงานในระบบ — เริ่มส่งรายงานแรกได้ที่แท็บ “ส่งรายงานใหม่”'
+        : 'ไม่พบรายงานที่ตรงกับการค้นหา ลองเปลี่ยนคำค้นหรือตัวกรอง';
+      empty.hidden = false;
+      return;
+    }
+    empty.hidden = true;
+    filtered.forEach(r => grid.appendChild(buildReportCard(r)));
+  }
+
+  function buildReportCard(r) {
+    const card = document.createElement('article');
+    card.className = 'report-card';
+
+    const tab = document.createElement('div');
+    tab.className = 'report-card-tab';
+    tab.textContent = r['รหัส'] || '';
+    card.appendChild(tab);
+
+    const title = document.createElement('h3');
+    title.className = 'report-card-title';
+    title.textContent = r['ชื่อสื่อการสอนหรือนวัตกรรม'] || '(ไม่มีชื่อ)';
+    card.appendChild(title);
+
+    const meta = document.createElement('p');
+    meta.className = 'report-card-meta';
+    meta.textContent = [r['ชื่อ-สกุล'], r['ตำแหน่ง'], r['กลุ่มสาระการเรียนรู้']].filter(Boolean).join(' · ');
+    card.appendChild(meta);
+
+    const badges = document.createElement('div');
+    badges.className = 'report-card-badges';
+    (r['ประเภทผลงานสื่อนวัตกรรม'] || '').split(',').map(s => s.trim()).filter(Boolean).forEach(t => {
+      const b = document.createElement('span');
+      b.className = 'badge'; b.textContent = t;
+      badges.appendChild(b);
+    });
+    card.appendChild(badges);
+
+    const course = document.createElement('p');
+    course.className = 'report-card-course';
+    course.textContent = [r['รหัสวิชา'], r['รายวิชา'], r['ระดับชั้นที่ใช้']].filter(Boolean).join(' · ');
+    card.appendChild(course);
+
+    if (r['รายละเอียด']) {
+      const details = document.createElement('p');
+      details.className = 'report-card-details';
+      details.textContent = r['รายละเอียด'];
+      card.appendChild(details);
+    }
+
+    const dateLine = formatThaiDate(r['วันที่บันทึก']);
+    if (dateLine) {
+      const d = document.createElement('p');
+      d.className = 'report-card-date';
+      d.textContent = dateLine;
+      card.appendChild(d);
+    }
+
+    const footer = document.createElement('div');
+    footer.className = 'report-card-footer';
+
+    if (r['ลิงก์ไฟล์']) {
+      const link = document.createElement('a');
+      link.href = r['ลิงก์ไฟล์']; link.target = '_blank'; link.rel = 'noopener';
+      link.className = 'link-file'; link.textContent = 'ดูไฟล์แนบ ↗';
+      footer.appendChild(link);
+    } else {
+      const span = document.createElement('span');
+      span.className = 'link-file link-file-empty'; span.textContent = 'ไม่มีไฟล์แนบ';
+      footer.appendChild(span);
+    }
+
+    if (r['สิทธิ์จัดการ']) {
+      const actions = document.createElement('div');
+      actions.className = 'report-card-actions';
+
+      const editBtn = document.createElement('button');
+      editBtn.type = 'button'; editBtn.className = 'icon-btn'; editBtn.textContent = 'แก้ไข';
+      editBtn.addEventListener('click', () => openEditForm(r));
+      actions.appendChild(editBtn);
+
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.className = 'icon-btn icon-btn-danger'; delBtn.textContent = 'ลบ';
+      delBtn.addEventListener('click', () => askDeleteConfirmation(r['รหัส']));
+      actions.appendChild(delBtn);
+
+      footer.appendChild(actions);
+    }
+
+    card.appendChild(footer);
+    return card;
+  }
+
+  // ==========================================
+  // 🗑️ DELETE CONFIRMATION
+  // ==========================================
+  function askDeleteConfirmation(reportId) {
+    pendingDeleteId = reportId;
+    document.getElementById('confirmOverlay').hidden = false;
+  }
+
+  // ==========================================
+  // 👥 ADMIN PANEL
+  // ==========================================
+  async function loadAdmins() {
+    const listEl = document.getElementById('adminList');
+    listEl.innerHTML = '';
+    const loading = document.createElement('li');
+    loading.className = 'admin-list-loading'; loading.textContent = 'กำลังโหลด...';
+    listEl.appendChild(loading);
+    try {
+      const result = await apiPost({ action: 'listAdmins', token: currentUser.token });
+      renderAdminList(result.admins || []);
+    } catch (err) {
+      listEl.innerHTML = '';
+      showToast('โหลดรายชื่อแอดมินไม่สำเร็จ: ' + err.message, 'error');
+    }
+  }
+
+  function renderAdminList(admins) {
+    const listEl = document.getElementById('adminList');
+    listEl.innerHTML = '';
+    if (admins.length === 0) {
+      const li = document.createElement('li');
+      li.className = 'admin-list-empty'; li.textContent = 'ยังไม่มีแอดมินใหญ่ในระบบ';
+      listEl.appendChild(li);
+      return;
+    }
+    admins.forEach(a => {
+      const li = document.createElement('li');
+      li.className = 'admin-row';
+
+      const info = document.createElement('div');
+      const name = document.createElement('p');
+      name.className = 'admin-name'; name.textContent = a.displayName;
+      const email = document.createElement('p');
+      email.className = 'admin-email'; email.textContent = a.email;
+      info.appendChild(name); info.appendChild(email);
+      li.appendChild(info);
+
+      const isSelf = currentUser && currentUser.email === a.email;
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button'; delBtn.className = 'icon-btn icon-btn-danger'; delBtn.textContent = 'ลบ';
+      delBtn.disabled = isSelf;
+      delBtn.title = isSelf ? 'ลบบัญชีของตัวเองไม่ได้' : 'ลบสิทธิ์แอดมินใหญ่ของคนนี้';
+      delBtn.addEventListener('click', async () => {
+        if (!confirm('ต้องการลบสิทธิ์แอดมินใหญ่ของ ' + a.email + ' ใช่หรือไม่?')) return;
+        try {
+          await apiPost({ action: 'deleteAdmin', token: currentUser.token, email: a.email });
+          showToast('ลบแอดมิน ' + a.email + ' เรียบร้อยแล้ว', 'success');
+          loadAdmins();
+        } catch (err) {
+          showToast(err.message || 'ลบแอดมินไม่สำเร็จ', 'error');
+        }
+      });
+      li.appendChild(delBtn);
+      listEl.appendChild(li);
+    });
+  }
+
+  // ==========================================
+  // 🔀 TABS
+  // ==========================================
+  function switchTab(tabName) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabName));
+    document.querySelectorAll('.panel').forEach(panel => { panel.hidden = panel.dataset.panel !== tabName; });
+    if (tabName === 'admin' && currentUser && currentUser.role === 'super') loadAdmins();
+  }
+
+  // ==========================================
+  // 🔔 TOAST
+  // ==========================================
+  function showToast(message, type) {
+    const region = document.getElementById('toastRegion');
+    const toast = document.createElement('div');
+    toast.className = 'toast ' + (type || '');
+    toast.textContent = message;
+    region.appendChild(toast);
+    setTimeout(() => {
+      toast.style.opacity = '0';
+      setTimeout(() => toast.remove(), 300);
+    }, 4200);
+  }
+
+  // ==========================================
+  // ⏳ LOADING STATE HELPERS
+  // ==========================================
+  function setSubmitLoading(loading) {
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = loading;
+    btn.textContent = loading ? 'กำลังบันทึก...' : (editingReportId ? 'บันทึกการแก้ไข' : 'บันทึกรายงาน');
+  }
+
+  function showUploadProgress(show) {
+    document.getElementById('uploadProgress').hidden = !show;
+    if (!show) updateUploadProgress(0);
+  }
+
+  function updateUploadProgress(percent) {
+    document.getElementById('uploadProgressBar').style.width = percent + '%';
+  }
+
+  // ==========================================
+  // 🔗 EVENT LISTENERS
+  // ==========================================
+  document.getElementById('position').addEventListener('change', function () {
+    toggleOtherInput(this.value === OTHER_VALUE, document.getElementById('positionOther'));
+  });
+  document.getElementById('productionMethod').addEventListener('change', function () {
+    toggleOtherInput(this.value === OTHER_VALUE, document.getElementById('productionMethodOther'));
+  });
+  document.getElementById('mediaTypesGroup').addEventListener('change', function () {
+    const checked = Array.from(document.querySelectorAll('input[name="mediaTypes"]:checked')).map(el => el.value);
+    toggleOtherInput(checked.indexOf(OTHER_VALUE) !== -1, document.getElementById('mediaTypesOther'));
+  });
+
+  const fileDropEl = document.getElementById('fileDrop');
+  const fileInputEl = document.getElementById('fileInput');
+  ['dragenter', 'dragover'].forEach(evt => fileDropEl.addEventListener(evt, e => { e.preventDefault(); fileDropEl.classList.add('dragover'); }));
+  ['dragleave', 'drop'].forEach(evt => fileDropEl.addEventListener(evt, e => { e.preventDefault(); fileDropEl.classList.remove('dragover'); }));
+  fileDropEl.addEventListener('drop', e => {
+    if (e.dataTransfer.files.length) { fileInputEl.files = e.dataTransfer.files; updateFileDropText(); }
+  });
+  fileInputEl.addEventListener('change', updateFileDropText);
+
+  document.getElementById('reportForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    if (!currentUser) { showToast('กรุณาเข้าสู่ระบบด้วยบัญชี Google ของโรงเรียนก่อนส่งรายงาน', 'error'); return; }
+
+    const payload = collectFormPayload();
+    const validationError = validateFormClientSide(payload);
+    if (validationError) { showToast(validationError, 'error'); return; }
+
+    const isEdit = !!editingReportId;
+    payload.action = isEdit ? 'update' : 'create';
+    payload.token = currentUser.token;
+    if (isEdit) payload.id = editingReportId;
+
+    setSubmitLoading(true);
+    try {
+      const file = fileInputEl.files[0];
+      if (file) {
+        if (file.type !== 'application/pdf') throw new Error('รองรับเฉพาะไฟล์ PDF เท่านั้น');
+        if (file.size > 50 * 1024 * 1024) throw new Error('ไฟล์มีขนาดใหญ่เกิน 50MB');
+        payload.fileMimeType = file.type || 'application/pdf';
+
+        if (file.size > CHUNK_SIZE) {
+          showUploadProgress(true);
+          const uploadId = generateUploadId();
+          payload.uploadId = uploadId;
+          payload.totalChunks = await uploadFileInChunks(file, uploadId);
+        } else {
+          const buf = await file.arrayBuffer();
+          payload.fileData = arrayBufferToBase64(buf);
+        }
+      } else if (!isEdit) {
+        throw new Error('กรุณาแนบไฟล์แบบสรุปกิจกรรมการใช้สื่อนวัตกรรม');
+      }
+
+      const result = await apiPost(payload);
+      showToast(isEdit ? 'แก้ไขรายงานเรียบร้อยแล้ว' : ('บันทึกรายงานเรียบร้อยแล้ว รหัสรายงาน ' + result.id), 'success');
+      const wasEdit = isEdit;
+      resetForm();
+      await loadReports();
+      if (wasEdit) switchTab('list');
+    } catch (err) {
+      showToast(err.message || 'เกิดข้อผิดพลาด', 'error');
+    } finally {
+      setSubmitLoading(false);
+      showUploadProgress(false);
+    }
+  });
+
+  document.getElementById('cancelEditBtn').addEventListener('click', () => { resetForm(); switchTab('list'); });
+
+  document.getElementById('signOutBtn').addEventListener('click', signOut);
+
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.addEventListener('click', () => switchTab(btn.dataset.tab)));
+
+  document.getElementById('searchInput').addEventListener('input', renderReports);
+  document.getElementById('filterSubject').addEventListener('change', renderReports);
+
+  document.getElementById('confirmCancelBtn').addEventListener('click', () => {
+    pendingDeleteId = null;
+    document.getElementById('confirmOverlay').hidden = true;
+  });
+  document.getElementById('confirmDeleteBtn').addEventListener('click', async () => {
+    if (!pendingDeleteId) return;
+    const id = pendingDeleteId;
+    document.getElementById('confirmOverlay').hidden = true;
+    try {
+      await apiPost({ action: 'delete', token: currentUser.token, id: id });
+      showToast('ลบรายงาน ' + id + ' เรียบร้อยแล้ว', 'success');
+      await loadReports();
+    } catch (err) {
+      showToast(err.message || 'ลบรายงานไม่สำเร็จ', 'error');
+    } finally {
+      pendingDeleteId = null;
+    }
+  });
+
+  document.getElementById('addAdminForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const email = document.getElementById('newAdminEmail').value.trim();
+    const displayName = document.getElementById('newAdminName').value.trim();
+    try {
+      await apiPost({ action: 'addAdmin', token: currentUser.token, email: email, displayName: displayName });
+      showToast('เพิ่ม ' + email + ' เป็นแอดมินใหญ่เรียบร้อยแล้ว', 'success');
+      this.reset();
+      loadAdmins();
+    } catch (err) {
+      showToast(err.message || 'เพิ่มแอดมินไม่สำเร็จ', 'error');
+    }
+  });
+
+  // ==========================================
+  // 🚀 INIT
+  // ==========================================
+  populateSelect(document.getElementById('position'), POSITIONS, 'เลือกตำแหน่ง');
+  populateSelect(document.getElementById('subjectGroup'), SUBJECT_GROUPS, 'เลือกกลุ่มสาระการเรียนรู้');
+  populateSelect(document.getElementById('productionMethod'), PRODUCTION_METHODS, 'เลือกวิธีการผลิตสื่อ');
+  populateChipGroup(document.getElementById('mediaTypesGroup'), MEDIA_TYPES);
+  populateSelect(document.getElementById('gradeLevel'), GRADE_LEVELS, 'เลือกระดับชั้น');
+  populateFilterSelect(document.getElementById('filterSubject'), SUBJECT_GROUPS, 'ทุกกลุ่มสาระการเรียนรู้');
+  loadReports();
+</script>
+</body>
+</html>
