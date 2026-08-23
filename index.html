@@ -713,6 +713,17 @@
           <select id="gradeLevel"></select>
         </div>
 
+        <div class="field field-row">
+          <div>
+            <label for="semester">ภาคเรียนที่ <span class="req">*</span></label>
+            <select id="semester"></select>
+          </div>
+          <div>
+            <label for="academicYear">ปีการศึกษา <span class="req">*</span></label>
+            <input type="text" id="academicYear" inputmode="numeric" maxlength="4" placeholder="เช่น 2568">
+          </div>
+        </div>
+
         <div class="field">
           <label for="details">รายละเอียด (อธิบายลักษณะสื่อการสอนพอสังเขป) <span class="req">*</span></label>
           <textarea id="details" rows="4" placeholder="อธิบายโดยย่อว่าสื่อ/นวัตกรรมนี้มีลักษณะอย่างไร ใช้ในขั้นตอนใดของการสอน"></textarea>
@@ -766,6 +777,7 @@
   const PRODUCTION_METHODS = ['ผลิตเอง', 'จัดหาจากแหล่งข้อมูลต่างๆ', OTHER_VALUE];
   const MEDIA_TYPES = ['CAI', 'E-Book', 'PowerPoint', 'ชุดการสอน', 'แบบฝึกทักษะ', 'เทคนิควิธีสอน', OTHER_VALUE];
   const GRADE_LEVELS = ['มัธยมศึกษาปีที่ 1', 'มัธยมศึกษาปีที่ 2', 'มัธยมศึกษาปีที่ 3', 'มัธยมศึกษาปีที่ 4', 'มัธยมศึกษาปีที่ 5', 'มัธยมศึกษาปีที่ 6'];
+  const SEMESTERS = ['ภาคเรียนที่ 1', 'ภาคเรียนที่ 2'];
 
   const CHUNK_SIZE = 6 * 1024 * 1024; // 6MB — ต้องตรงกับฝั่ง backend (หารด้วย 3 ลงตัวพอดี)
 
@@ -942,6 +954,8 @@
       courseCode: document.getElementById('courseCode').value.trim(),
       courseName: document.getElementById('courseName').value.trim(),
       gradeLevel: document.getElementById('gradeLevel').value,
+      semester: document.getElementById('semester').value,
+      academicYear: document.getElementById('academicYear').value.trim(),
       details: document.getElementById('details').value.trim()
     };
   }
@@ -956,6 +970,8 @@
     if (!v.courseCode) return 'กรุณากรอกรหัสวิชา';
     if (!v.courseName) return 'กรุณากรอกรายวิชา';
     if (!v.gradeLevel) return 'กรุณาเลือกระดับชั้นที่ใช้สื่อการสอน';
+    if (!v.semester) return 'กรุณาเลือกภาคเรียนที่';
+    if (!/^\d{4}$/.test(v.academicYear)) return 'กรุณากรอกปีการศึกษาเป็นตัวเลข 4 หลักเท่านั้น';
     if (!v.details) return 'กรุณากรอกรายละเอียดลักษณะสื่อการสอน';
     return null;
   }
@@ -1037,6 +1053,8 @@
     document.getElementById('courseCode').value = report['รหัสวิชา'] || '';
     document.getElementById('courseName').value = report['รายวิชา'] || '';
     document.getElementById('gradeLevel').value = report['ระดับชั้นที่ใช้'] || '';
+    document.getElementById('semester').value = report['ภาคเรียนที่'] || '';
+    document.getElementById('academicYear').value = report['ปีการศึกษา'] || '';
     document.getElementById('details').value = report['รายละเอียด'] || '';
     document.getElementById('fileInput').value = '';
     document.getElementById('fileDropText').textContent = report['ลิงก์ไฟล์']
@@ -1121,7 +1139,7 @@
 
   function matchesSearch(r, term) {
     if (!term) return true;
-    const haystack = [r['ชื่อสื่อการสอนหรือนวัตกรรม'], r['ชื่อ-สกุล'], r['รายวิชา'], r['รหัสวิชา'], r['รายละเอียด']].join(' ').toLowerCase();
+    const haystack = [r['ชื่อสื่อการสอนหรือนวัตกรรม'], r['ชื่อ-สกุล'], r['รายวิชา'], r['รหัสวิชา'], r['รายละเอียด'], r['ภาคเรียนที่'], r['ปีการศึกษา']].join(' ').toLowerCase();
     return haystack.indexOf(term) !== -1;
   }
 
@@ -1302,7 +1320,8 @@
 
     const course = document.createElement('p');
     course.className = 'report-card-course';
-    course.textContent = [r['รหัสวิชา'], r['รายวิชา'], r['ระดับชั้นที่ใช้']].filter(Boolean).join(' · ');
+    const semesterYear = (r['ภาคเรียนที่'] && r['ปีการศึกษา']) ? (r['ภาคเรียนที่'] + ' ปีการศึกษา ' + r['ปีการศึกษา']) : '';
+    course.textContent = [r['รหัสวิชา'], r['รายวิชา'], r['ระดับชั้นที่ใช้'], semesterYear].filter(Boolean).join(' · ');
     body.appendChild(course);
 
     if (r['ลิงก์ไฟล์']) {
@@ -2067,6 +2086,10 @@
   document.getElementById('productionMethod').addEventListener('change', function () {
     toggleOtherInput(this.value === OTHER_VALUE, document.getElementById('productionMethodOther'));
   });
+  document.getElementById('academicYear').addEventListener('input', function () {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 4);
+  });
+
   document.getElementById('mediaTypesGroup').addEventListener('change', function () {
     const checked = Array.from(document.querySelectorAll('input[name="mediaTypes"]:checked')).map(el => el.value);
     toggleOtherInput(checked.indexOf(OTHER_VALUE) !== -1, document.getElementById('mediaTypesOther'));
@@ -2196,6 +2219,7 @@
   populateSelect(document.getElementById('productionMethod'), PRODUCTION_METHODS, 'เลือกวิธีการผลิตสื่อ');
   populateChipGroup(document.getElementById('mediaTypesGroup'), MEDIA_TYPES);
   populateSelect(document.getElementById('gradeLevel'), GRADE_LEVELS, 'เลือกระดับชั้น');
+  populateSelect(document.getElementById('semester'), SEMESTERS, 'เลือกภาคเรียน');
   initChartDefaults();
   switchTab('home');
   loadReports();
